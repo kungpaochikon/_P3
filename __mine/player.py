@@ -7,7 +7,7 @@ class Player(pygame.sprite.Sprite):
         self.x = 48
         self.y = 256
         self.rect = self.image.get_rect()
-        self.ehight = self.rect.height
+        self.h = self.rect.height
         self.screen = panel
         self.jumpHeight = 12
         self.ysp = 0

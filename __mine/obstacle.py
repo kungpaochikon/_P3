@@ -9,12 +9,8 @@ class Obstacle(pygame.sprite.Sprite):
         self.h = self.rect.height
         self.screen = panel
         self.x = x
-        diff = 64
-        self.midY = midY
-        self.y = midY + diff
         self.top = top
-        if(top):
-            self.y -= 512
+        self.setMidY(midY)
 
         
         
@@ -29,5 +25,9 @@ class Obstacle(pygame.sprite.Sprite):
 
         self.updateDisplay()
 
-    def setMidY(self):
-        self
+    def setMidY(self,midY):
+        diff = 96
+        self.midY = midY
+        self.y = midY + diff
+        if(self.top):
+            self.y = midY - diff - self.h

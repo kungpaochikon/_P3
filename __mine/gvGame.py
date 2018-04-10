@@ -1,0 +1,118 @@
+#Inspiration/Learning From:
+#https://github.com/llSourcell/neuroevolution-for-flappy-birds
+
+import pygame
+from pygame.locals import *
+import sys
+import random
+from player import Player
+from obstacle import Obstacle
+import neat
+import pickle
+
+class Game():
+    def game(self, genome, config, mode):
+        #Set Mode (0 = Play, 1 = Train)
+        self.mode = mode
+        
+        FPS = 60
+        if(self.mode==1):
+            FPS = 200
+        WIDTH = 288
+        HEIGHT = 512
+        running = True
+        BACKGROUND = pygame.image.load("bg.png")        
+        
+        
+        #NEAT Stuff
+        if(self.mode==1):
+            fitness = 0;
+            ffnet = neat.nn.FeedForwardNetwork.create(genome,config)
+        
+        pygame.init()
+        CLOCK = pygame.time.Clock()
+        PANEL = pygame.display.set_mode((WIDTH,HEIGHT))
+        SCORE = 0
+        
+        #Player Character
+        player = Player(PANEL)
+        
+        #Obstacles
+        obsU1 = Obstacle(PANEL,512,256,False)
+        obsL1 = Obstacle(PANEL,512,256,True)
+        obsU2 = Obstacle(PANEL,512+200,160,False)
+        obsL2 = Obstacle(PANEL,512+200,160,True)
+        
+        #Create List of Obstacles for easy handling
+        obsList = []
+        obsList.append(obsU1)
+        obsList.append(obsL1)
+        obsList.append(obsU2)
+        obsList.append(obsL2)
+        
+        #Create Group of Sprites for Collision Detection
+        obsGroup = pygame.sprite.Group()
+        for obs in obsList:
+            obsGroup.add(obs)
+
+        #Game Loop
+        while running:
+            SCORE+=1
+            if(self.mode==1):
+            #Get Closest Obs
+                minBotX = 1000
+                minTopX = 1000
+                botObs = None
+                topObs = None
+                for obs in obsList:
+                    if(obs.top and obs.x<minTopX):
+                        topObs = obs
+                    if(not obs.top and obs.x<minBotX):
+                        botObs = obs
+                closestMid = topObs.midY
+                input = (player.y,topObs.x,topObs.y,botObs.y)
+                distanceToMid = abs(player.y - closestMid)
+                fitness = SCORE - distanceToMid
+                output = ffnet.activate(input)
+                if(output[0]>=0.5):
+                   player.jump()
+
+                
+            PANEL.blit(BACKGROUND,(0,0))
+            #Get Inputs
+            for event in pygame.event.get():
+                if(event.type == KEYDOWN and mode==0):
+                    #Player Jump
+                    if(event.key == K_SPACE):
+                        player.jump()
+                    #Close Game With Escape Key
+                    if(event.key == K_ESCAPE):
+                        close()
+            player.step()
+            myMid = random.randint(160,512-160)
+            for obs in obsList:
+                obs.step()
+                #Reset Obs
+                if(obs.x < 0 - obs.w):
+                    obs.x = obs.x + WIDTH * 1.5
+                    obs.setMidY(myMid)
+            #Check Collision
+            collision = pygame.sprite.spritecollideany(player,obsGroup)
+
+            #Game Over Conditions
+            if(collision!=None or player.y<=0 or player.y>=HEIGHT):
+                if(self.mode==0):
+                    print("GAME OVER")
+                    close()
+                if(self.mode==1):
+                    return fitness
+                
+            
+            pygame.display.update()
+            CLOCK.tick(FPS)    
+
+def close():
+    pygame.display.quit()
+    pygame.quit()
+    sys.exit()
+
