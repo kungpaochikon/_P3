@@ -21,6 +21,7 @@ class Game():
         WIDTH = 288
         HEIGHT = 512
         running = True
+        paused = False
         BACKGROUND = pygame.image.load("bg.png")        
         
         
@@ -66,7 +67,7 @@ class Game():
         #Game Loop
         while running:
             time+=1
-            if(self.mode==1):
+            if(self.mode==1 and not paused):
                 #Get Closest Obs
                 minBotX = 1000
                 minTopX = 1000
@@ -87,36 +88,38 @@ class Game():
                 if(output[0]>=0.5):
                    player.jump()
 
-                
-            PANEL.blit(BACKGROUND,(0,0))
             #Get Inputs
             for event in pygame.event.get():
                 if(event.type == KEYDOWN):
                     #Player Jump
                     if(event.key == K_SPACE and mode==0):
                         player.jump()
+                    if(event.key == K_TAB and mode==0):
+                        paused = not paused
                     #Close Game With Escape Key
                     if(event.key == K_ESCAPE):
                         self.close()
-            player.step()
-            myMid = random.randint(160,512-160)
-            for obs in obsList:
-                obs.step()
-                #Reset Obs
-                if(obs.x < 0 - obs.w):
-                    obs.x = obs.x + WIDTH * 1.5
-                    obs.setMidY(myMid)
-                    score+=5
-            #Check Collision
-            collision = pygame.sprite.spritecollideany(player,obsGroup)
+            if(not paused):
+                PANEL.blit(BACKGROUND,(0,0))
+                player.step()
+                myMid = random.randint(160,512-160)
+                for obs in obsList:
+                    obs.step()
+                    #Reset Obs
+                    if(obs.x < 0 - obs.w):
+                        obs.x = obs.x + WIDTH * 1.5
+                        obs.setMidY(myMid)
+                        score+=5
+                #Check Collision
+                collision = pygame.sprite.spritecollideany(player,obsGroup)
 
-            #Game Over Conditions
-            if(collision!=None or player.y<=0 or player.y>=HEIGHT):
-                if(self.mode==0):
-                    print("GAME OVER")
-                    self.close()
-                if(self.mode==1):
-                    return fitness
+                #Game Over Conditions
+                if(collision!=None or player.y<=0 or player.y>=HEIGHT):
+                    if(self.mode==0):
+                        print("GAME OVER")
+                        self.close()
+                    if(self.mode==1):
+                        return fitness
                 
             
             pygame.display.update()

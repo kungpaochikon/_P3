@@ -16,13 +16,16 @@ def eval_genomes(genomes, config):
 
     GENERATION += 1
     game = Game()
-    genome.fitness = game.game(genome, config, 1)
-    print("Gen : %d Genome # : %d  Fitness : %f Max Fitness : %f"%(GENERATION,i,genome.fitness, MAX_FITNESS))
-    if genome.fitness >= MAX_FITNESS:
-        MAX_FITNESS = genome.fitness
-        BEST_GENOME = genome
-    SCORE = 0
-    i+=1
+    for genome_id, genome in genomes:
+        
+        genome.fitness = game.game(genome, config, 1)
+        print("")
+        print("Generation: " + str(GENERATION) + ", Genome: " + str(i) + ", My Fitness: " + str(round(genome.fitness)) + ", Best Fitness: " + str(round(MAX_FITNESS)))
+        if genome.fitness >= MAX_FITNESS:
+            MAX_FITNESS = genome.fitness
+            BEST_GENOME = genome
+        SCORE = 0
+        i+=1
 
 config = neat.Config(neat.DefaultGenome, neat.DefaultReproduction,
                          neat.DefaultSpeciesSet, neat.DefaultStagnation,
