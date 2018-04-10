@@ -16,15 +16,13 @@ def eval_genomes(genomes, config):
 
     GENERATION += 1
     game = Game()
-    for genome_id, genome in genomes:
-        
-        genome.fitness = game.game(genome, config, 1)
-        print("Gen : %d Genome # : %d  Fitness : %f Max Fitness : %f"%(GENERATION,i,genome.fitness, MAX_FITNESS))
-        if genome.fitness >= MAX_FITNESS:
-            MAX_FITNESS = genome.fitness
-            BEST_GENOME = genome
-        SCORE = 0
-        i+=1
+    genome.fitness = game.game(genome, config, 1)
+    print("Gen : %d Genome # : %d  Fitness : %f Max Fitness : %f"%(GENERATION,i,genome.fitness, MAX_FITNESS))
+    if genome.fitness >= MAX_FITNESS:
+        MAX_FITNESS = genome.fitness
+        BEST_GENOME = genome
+    SCORE = 0
+    i+=1
 
 config = neat.Config(neat.DefaultGenome, neat.DefaultReproduction,
                          neat.DefaultSpeciesSet, neat.DefaultStagnation,
@@ -42,5 +40,5 @@ outputDir = 'bestGenomes'
 outputFile = open(outputDir+'\_'+str(int(MAX_FITNESS))+'.p','wb' )
 pickle.dump(winner, outputFile)
 outputFile.close();
-game.close()
+
 sys.exit();

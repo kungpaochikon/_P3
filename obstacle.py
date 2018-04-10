@@ -3,7 +3,7 @@ import pygame
 class Obstacle(pygame.sprite.Sprite):
     def __init__(self,panel,x,midY,top):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load("obs.png")
+        self.image = pygame.image.load("pipe.png")
         self.rect = self.image.get_rect()
         self.w = self.rect.width
         self.h = self.rect.height
@@ -13,7 +13,9 @@ class Obstacle(pygame.sprite.Sprite):
         self.setMidY(midY)
 
         
-        
+        #Flip Sprite if Top
+        if(top):
+            self.image = pygame.transform.rotate(self.image,180)
         self.updateDisplay()
 
     def updateDisplay(self):
