@@ -32,7 +32,8 @@ class Game():
         pygame.init()
         CLOCK = pygame.time.Clock()
         PANEL = pygame.display.set_mode((WIDTH,HEIGHT))
-        SCORE = 0
+        score = 0
+        time = 0
         
         #Player Character
         player = Player(PANEL)
@@ -43,6 +44,7 @@ class Game():
         obsU2 = Obstacle(PANEL,512+200,160,False)
         obsL2 = Obstacle(PANEL,512+200,160,True)
         
+        
         #Create List of Obstacles for easy handling
         obsList = []
         obsList.append(obsU1)
@@ -52,14 +54,20 @@ class Game():
         
         #Create Group of Sprites for Collision Detection
         obsGroup = pygame.sprite.Group()
+        myNum = 0
         for obs in obsList:
             obsGroup.add(obs)
+            #Let's also use this time to set the initial midY
+            if(myNum==0 or myNum==2):
+                myMid = random.randint(160,512-160)
+            obs.setMidY(myMid)
+            myNum+=1
 
         #Game Loop
         while running:
-            SCORE+=1
+            time+=1
             if(self.mode==1):
-            #Get Closest Obs
+                #Get Closest Obs
                 minBotX = 1000
                 minTopX = 1000
                 botObs = None
@@ -71,8 +79,10 @@ class Game():
                         botObs = obs
                 closestMid = topObs.midY
                 input = (player.y,topObs.x,topObs.y,botObs.y)
-                distanceToMid = abs(player.y - closestMid)
-                fitness = SCORE - distanceToMid
+                #distanceToMid = abs(player.y - closestMid)
+                distanceToMid = (((player.y - closestMid)**2)*100)/(512*512)
+                #fitness = time + score - distanceToMid
+                fitness = score - distanceToMid + (time/10.0)
                 output = ffnet.activate(input)
                 if(output[0]>=0.5):
                    player.jump()
@@ -87,7 +97,7 @@ class Game():
                         player.jump()
                     #Close Game With Escape Key
                     if(event.key == K_ESCAPE):
-                        close()
+                        self.close()
             player.step()
             myMid = random.randint(160,512-160)
             for obs in obsList:
@@ -96,6 +106,7 @@ class Game():
                 if(obs.x < 0 - obs.w):
                     obs.x = obs.x + WIDTH * 1.5
                     obs.setMidY(myMid)
+                    score+=5
             #Check Collision
             collision = pygame.sprite.spritecollideany(player,obsGroup)
 
@@ -103,7 +114,7 @@ class Game():
             if(collision!=None or player.y<=0 or player.y>=HEIGHT):
                 if(self.mode==0):
                     print("GAME OVER")
-                    close()
+                    self.close()
                 if(self.mode==1):
                     return fitness
                 
@@ -111,8 +122,8 @@ class Game():
             pygame.display.update()
             CLOCK.tick(FPS)    
 
-def close():
-    pygame.display.quit()
-    pygame.quit()
-    sys.exit()
+    def close(self):
+        pygame.display.quit()
+        pygame.quit()
+        sys.exit()
 

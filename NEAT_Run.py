@@ -30,17 +30,16 @@ config = neat.Config(neat.DefaultGenome, neat.DefaultReproduction,
                          neat.DefaultSpeciesSet, neat.DefaultStagnation,
                          'config')
 
-pop = neat.Population(config)
-stats = neat.StatisticsReporter()
-pop.add_reporter(stats)
+genomeFile = 'bestGenomes/_955.p'
+genome = pickle.load(open(genomeFile,'rb'))
 
-winner = pop.run(eval_genomes, 80)
+fitnessScores = []
+game = Game()
+for i in range(10):
+    fitness = game.game(genome, config,1)
+    SCORE = 0
+    print('Fitness is %f'% fitness)
+    fitnessScores.append(fitness)
 
-print(winner)
-
-outputDir = 'bestGenomes'
-outputFile = open(outputDir+'\_'+str(int(MAX_FITNESS))+'.p','wb' )
-pickle.dump(winner, outputFile)
-outputFile.close();
 game.close()
 sys.exit();
