@@ -81,9 +81,9 @@ class Game():
             PANEL.blit(BACKGROUND,(0,0))
             #Get Inputs
             for event in pygame.event.get():
-                if(event.type == KEYDOWN and mode==0):
+                if(event.type == KEYDOWN):
                     #Player Jump
-                    if(event.key == K_SPACE):
+                    if(event.key == K_SPACE and mode==0):
                         player.jump()
                     #Close Game With Escape Key
                     if(event.key == K_ESCAPE):

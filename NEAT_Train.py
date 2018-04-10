@@ -9,31 +9,6 @@ GENERATION = 0
 MAX_FITNESS = 0
 BEST_GENOME = 0
 
-'''
-def game(genome, config):
-
-    network = neat.nn.FeedForwardNetwork.create(genome,config)
-
-    numPassed = 0
-
-    while True:
-        num1 = random.randint(0,10)
-        num2 = random.randint(0,10)
-        input = (num1,num2)
-        fitness = numPassed
-        output = network.activate(input)
-        print("Number1: "+str(num1))
-        print("Number2: "+str(num2))
-        print("AVG: "+str((num1+num2)/2))
-        print("Output: "+str(output[0]*10))
-        if(abs(output[0]*10 - (num1+num2)/2)>3 or numPassed>500):
-            print("DONE!!!!!!!!!!!")
-            return fitness
-        numPassed+=1
-'''     
-
-    
-
 def eval_genomes(genomes, config):
     i = 0
     global SCORE
