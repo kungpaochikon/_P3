@@ -14,13 +14,16 @@ def game(genome, config):
     numPassed = 0
 
     while True:
-        num = random.randint(0,10)
-        input = (num,)
+        num1 = random.randint(0,10)
+        num2 = random.randint(0,10)
+        input = (num1,num2)
         fitness = numPassed
         output = network.activate(input)
-        print("Number: "+str(num))
+        print("Number1: "+str(num1))
+        print("Number2: "+str(num2))
+        print("AVG: "+str((num1+num2)/2))
         print("Output: "+str(output[0]*10))
-        if(abs(output[0]*10 - num)>1 or numPassed>100):
+        if(abs(output[0]*10 - (num1+num2)/2)>3 or numPassed>500):
             print("DONE!!!!!!!!!!!")
             return fitness
         numPassed+=1
