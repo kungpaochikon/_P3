@@ -35,16 +35,14 @@ def eval_genomes(genomes, config):
         i+=1
 
 #Load Neat Config
-config = neat.Config(neat.DefaultGenome, neat.DefaultReproduction,
-                         neat.DefaultSpeciesSet, neat.DefaultStagnation,
-                         'config')
+config = neat.Config(neat.DefaultGenome, neat.DefaultReproduction,neat.DefaultSpeciesSet, neat.DefaultStagnation,'config')
 #Create population
 pop = neat.Population(config)
 stats = neat.StatisticsReporter()
 pop.add_reporter(stats)
 
 #Run all generations and return best genome
-bestGenome = pop.run(eval_genomes, 80)
+bestGenome = pop.run(eval_genomes, 10)
 
 print(bestGenome)
 
@@ -53,5 +51,5 @@ outputDir = 'bestGenomes'
 outputFile = open(outputDir+'\_'+str(int(MAX_FITNESS))+'.p','wb' )
 pickle.dump(bestGenome, outputFile)
 outputFile.close();
-
+game.close()
 sys.exit();

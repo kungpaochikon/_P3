@@ -1,5 +1,7 @@
 #Inspiration/Learning From:
 #https://github.com/llSourcell/neuroevolution-for-flappy-birds
+#http://neat-python.readthedocs.io/en/latest/neat_overview.html
+#https://github.com/michael-iuzzolino/FlapPyBio-NEAT
 
 import pygame
 from pygame.locals import *
@@ -17,15 +19,19 @@ class Game():
     def game(self, genome, config, mode):
         #Set Mode (0 = Play, 1 = Train)
         self.mode = mode
-        
+
+        #Run Speed
         FPS = 60
         if(self.mode==1):
             FPS = 200
+        #Panel Dimensions
         WIDTH = 288
         HEIGHT = 512
         running = True
         paused = False
         BACKGROUND = pygame.image.load("bg.png")
+
+        #HELPER VARS---
         #Last Obstacle Jumped Over
         lastObst = None
         #closest mid point
@@ -33,7 +39,6 @@ class Game():
         botObs = None
         topObs = None
         closestX = 0
-        
         
         #NEAT Stuff
         if(self.mode==1):
@@ -91,14 +96,13 @@ class Game():
                         minBotX = botObs.x
                 closestMid = topObs.midY
                 closestX = topObs.x
-                input = (player.y,topObs.x,topObs.y,botObs.y)
-
-                
-                #input = (player.y,topObs.x,closestMid)
-                #distanceToMid = abs(player.y - closestMid)
-                distanceToMid = (((player.y - closestMid)**2)*100)/(512*512)
-                #fitness = time + SCORE - distanceToMid
-                fitness = myGlobals.SCORE - distanceToMid + (time/10.0)
+                #Direction of mid point
+                direction = 1
+                if(player.y - closestMid < 0):
+                    direction = -1
+                input = (player.y,topObs.x,closestMid,direction)
+                distanceToMid = abs(player.y - closestMid)
+                fitness = time + myGlobals.SCORE*10 - distanceToMid
                 #Get Output
                 output = ffnet.activate(input)
                 #Jump if output is above threshold
