@@ -25,7 +25,7 @@ def eval_genomes(genomes, config):
         #Run game and return fitness
         genome.fitness = game.game(genome, config, 1)
         #Print Results in Console
-        print("Gen:" + str(GENERATION) + " Gnm:" + str(i) + " MyFit:" + str(round(genome.fitness)) + " TopFit:" + str(round(MAX_FITNESS)) + " TopSCR:"+str(highScore))
+        print("Gen:" + str(GENERATION) + " Gnm:" + str(i) + "\nMyFit:" + str(round(genome.fitness)) + " TopFit:" + str(round(MAX_FITNESS)) + " TopSCR:"+str(highScore)+"\n")
         if genome.fitness >= MAX_FITNESS:
             MAX_FITNESS = genome.fitness
             BEST_GENOME = genome
@@ -35,7 +35,9 @@ def eval_genomes(genomes, config):
         i+=1
 
 #Load Neat Config
-config = neat.Config(neat.DefaultGenome, neat.DefaultReproduction,neat.DefaultSpeciesSet, neat.DefaultStagnation,'config')
+config = neat.Config(neat.DefaultGenome, neat.DefaultReproduction,
+                         neat.DefaultSpeciesSet, neat.DefaultStagnation,
+                         'config')
 #Create population
 pop = neat.Population(config)
 stats = neat.StatisticsReporter()
@@ -51,5 +53,5 @@ outputDir = 'bestGenomes'
 outputFile = open(outputDir+'\_'+str(int(MAX_FITNESS))+'.p','wb' )
 pickle.dump(bestGenome, outputFile)
 outputFile.close();
-game.close()
+
 sys.exit();

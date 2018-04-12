@@ -141,7 +141,7 @@ class Game():
                     if(obs.top and obs.x<player.x and lastObst != obs):
                         myGlobals.SCORE+=10
                         lastObst = obs
-                        print('SCORE: ' + str(myGlobals.SCORE))
+                        print('---SCORE: ' + str(myGlobals.SCORE))
                 #Check Collision
                 collision = pygame.sprite.spritecollideany(player,obsGroup)
 
